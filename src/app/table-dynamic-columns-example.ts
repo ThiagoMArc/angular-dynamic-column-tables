@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -27,15 +27,51 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['table-dynamic-columns-example.css'],
   templateUrl: 'table-dynamic-columns-example.html',
 })
-export class TableDynamicColumnsExample {
+export class TableDynamicColumnsExample implements OnInit {
   displayedColumns: string[] = ['name', 'position'];
   data: PeriodicElement[] = ELEMENT_DATA;
 
-  notSelected: string[] = ['weight', 'symbol'];
+  // notSelected: string[] = ['weight', 'symbol'];
+  // selected: string[] = [];
 
-  selected: string[] = [];
+  // notSelected: string[] = [];
+  // selected: string[] = ['weight', 'symbol'];
 
-  addColumn() {
+  // notSelected: string[] = ['weight'];
+  // selected: string[] = ['symbol'];
+
+  notSelected: string[] = ['symbol'];
+  selected: string[] = ['weight'];
+
+  ngOnInit(): void {
+    this.initializeWeightOrSymbolColumns();
+  }
+
+  initializeWeightOrSymbolColumns() {
+    const weightSelected = this.selected.indexOf('weight');
+    const symbolSelected = this.selected.indexOf('symbol');
+    const firstColumn = this.displayedColumns.indexOf(this.displayedColumns[0]);
+
+    if (
+      weightSelected !== -1 &&
+      this.displayedColumns.indexOf('weight') === -1
+    ) {
+      this.displayedColumns.splice(firstColumn + 1, 0, 'weight');
+    }
+
+    if (
+      symbolSelected !== -1 &&
+      this.displayedColumns.indexOf('symbol') === -1
+    ) {
+      const symbolPosition =
+        this.displayedColumns.indexOf('weight') === -1
+          ? firstColumn + 1
+          : firstColumn + 2;
+      this.displayedColumns.splice(symbolPosition, 0, 'symbol');
+    }
+  }
+
+  addWeightOrSymbolColumns() {
     const weightSelected = this.selected.indexOf('weight');
     const symbolSelected = this.selected.indexOf('symbol');
 
@@ -70,7 +106,7 @@ export class TableDynamicColumnsExample {
     }
   }
 
-  removeColumn() {
+  removeWeightOrSymbolColumns() {
     const weightNotSelected = this.notSelected.indexOf('weight');
     const symbolNotSelected = this.notSelected.indexOf('symbol');
 
@@ -105,15 +141,15 @@ export class TableDynamicColumnsExample {
         event.currentIndex
       );
 
-      this.addOrRemoveColumns(selectedSizeBeforeTransfer);
+      this.addOrRemoveWeightOrSymbolColumns(selectedSizeBeforeTransfer);
     }
   }
 
-  addOrRemoveColumns(selectedSizeBeforeTransfer: number) {
+  addOrRemoveWeightOrSymbolColumns(selectedSizeBeforeTransfer: number) {
     if (selectedSizeBeforeTransfer < this.selected.length) {
-      this.addColumn();
+      this.addWeightOrSymbolColumns();
     } else {
-      this.removeColumn();
+      this.removeWeightOrSymbolColumns();
     }
   }
 }
